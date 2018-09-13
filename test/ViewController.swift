@@ -7,65 +7,38 @@
 //
 
 import UIKit
-import Kanna
 
 class ViewController: UIViewController {
     
-    let myURLString = "http://www.google.com"
-    var statusCode = Int()
-
+    var URLQuery = [URLClass]()
     @IBOutlet weak var textView: UITextView!
     @IBAction func getInfoButton(_ sender: UIBarButtonItem) {
-        
-        let text = getTitle(myURLString: myURLString)
-        print(text)
+        parseTextForURL()
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        getResponseCode(myURLString: myURLString)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
     }
     
-    func getTitle(myURLString: String) -> String {
-        var titleFromHTML = ""
-        
-        if let myURL = NSURL(string: myURLString) {
-            
-            var error: NSError?
-            let myHTMLString = try! NSString(contentsOf: myURL as URL, encoding: String.Encoding.utf8.rawValue)
-            getResponseCode(myURLString: myURLString)
-            if let error = error {
-                print("Error : \(error)")
-            } else {
-                let HTMLString = String(myHTMLString)
-                
-                    if let index = HTMLString.range(of: "</title>")?.lowerBound {
-                    let substring = HTMLString[..<index]
-                    titleFromHTML = String(substring)
-                    if let index = (titleFromHTML.range(of: "<title>")?.upperBound) {
-                        let substring = String(titleFromHTML.suffix(from: index))
-                        titleFromHTML = String(substring)
-                        
-                    }
-                }
-            }
-        }
-        self.textView.text = String(statusCode)
+    func parseTextForURL(){
+        let text = self.textView.text
+        let urls = text?.components(separatedBy: .newlines)
+        for item in urls! {
+            let newURLClass = URLClass()
+            let urlString = String(item)
+            newURLClass.myURLStrings = urlString
+            newURLClass.getTitle(myURLString: urlString)
 
-        return titleFromHTML
-    }
-    
-    func getResponseCode(myURLString: String) {
-        let url = URL(string: myURLString)
-        let task = URLSession.shared.dataTask(with: url!) { _, response, _ in
-            if let httpResponse = response as? HTTPURLResponse {
-                self.statusCode = httpResponse.statusCode
+            URLQuery.append(newURLClass)
+            for item in URLQuery {
+                            print("URL = \(item.myURLStrings)")
+                            print("Title = \(item.myURLtitle)")
+                            print("ResponseCode = \(item.statusCode)")
             }
         }
-        task.resume()
     }
 }
 

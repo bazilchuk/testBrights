@@ -14,31 +14,32 @@ class URLClass {
     var myURLtitle = ""
     var statusCode = Int()
     
-    func getTitle(myURLString: String) -> String {
+    func getTitle(myURLString: String){
         var titleFromHTML = ""
+        getResponseCode(myURLString: myURLString)
         
-        if let myURL = NSURL(string: myURLString) {
+        
+        guard let myURL = URL(string: myURLString) else {
+            print("Error: \(myURLString) doesn't seem to be a valid URL")
+            return
+        }
+        
+        do {
+            let myHTMLString = try String(contentsOf: myURL, encoding: .ascii)
+            //            print("HTML : \(myHTMLString)")
+            let HTMLString = String(myHTMLString)
             
-            var error: NSError?
-            let myHTMLString = try! NSString(contentsOf: myURL as URL, encoding: String.Encoding.utf8.rawValue)
-            getResponseCode(myURLString: myURLString)
-            if let error = error {
-                print("Error : \(error)")
-            } else {
-                let HTMLString = String(myHTMLString)
-                
-                if let index = HTMLString.range(of: "</title>")?.lowerBound {
-                    let substring = HTMLString[..<index]
-                    titleFromHTML = String(substring)
-                    if let index = (titleFromHTML.range(of: "<title>")?.upperBound) {
-                        let substring = String(titleFromHTML.suffix(from: index))
-                        titleFromHTML = String(substring)
-                        
-                    }
+            if let index = HTMLString.range(of: "</title>")?.lowerBound {
+                let substring = HTMLString[..<index]
+                titleFromHTML = String(substring)
+                if let index = (titleFromHTML.range(of: "<title>")?.upperBound) {
+                    let substring = String(titleFromHTML.suffix(from: index))
+                    self.myURLtitle = String(substring)
                 }
             }
+        } catch let error {
+            print("Error: \(error)")
         }
-        return titleFromHTML
     }
     
     func getResponseCode(myURLString: String) {
