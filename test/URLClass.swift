@@ -1,33 +1,18 @@
 //
-//  ViewController.swift
+//  URLClass.swift
 //  test
 //
 //  Created by Andrei Bazilchuk on 9/13/18.
 //  Copyright © 2018 Andrei Bazilchuk. All rights reserved.
 //
 
-import UIKit
-import Kanna
+import Foundation
 
-class ViewController: UIViewController {
+class URLClass {
     
-    let myURLString = "http://www.google.com"
+    var myURLStrings = ""
+    var myURLtitle = ""
     var statusCode = Int()
-
-    @IBOutlet weak var textView: UITextView!
-    @IBAction func getInfoButton(_ sender: UIBarButtonItem) {
-        
-        let text = getTitle(myURLString: myURLString)
-        print(text)
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        getResponseCode(myURLString: myURLString)
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
     
     func getTitle(myURLString: String) -> String {
         var titleFromHTML = ""
@@ -42,7 +27,7 @@ class ViewController: UIViewController {
             } else {
                 let HTMLString = String(myHTMLString)
                 
-                    if let index = HTMLString.range(of: "</title>")?.lowerBound {
+                if let index = HTMLString.range(of: "</title>")?.lowerBound {
                     let substring = HTMLString[..<index]
                     titleFromHTML = String(substring)
                     if let index = (titleFromHTML.range(of: "<title>")?.upperBound) {
@@ -53,8 +38,6 @@ class ViewController: UIViewController {
                 }
             }
         }
-        self.textView.text = String(statusCode)
-
         return titleFromHTML
     }
     
@@ -68,4 +51,3 @@ class ViewController: UIViewController {
         task.resume()
     }
 }
-
