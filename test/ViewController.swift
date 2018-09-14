@@ -10,17 +10,19 @@ import UIKit
 
 class ViewController: UIViewController {
     
+    let queryShared = queryURL.shared
     var URLQuery = [URLClass]()
     @IBOutlet weak var textView: UITextView!
-    @IBAction func getInfoButton(_ sender: UIBarButtonItem) {
-        parseTextForURL()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-    }
+//    @IBAction func getInfoButton(_ sender: UIBarButtonItem) {
+//        parseTextForURL()
+//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+                parseTextForURL()
     }
     
     func parseTextForURL(){
@@ -32,12 +34,12 @@ class ViewController: UIViewController {
             newURLClass.myURLStrings = urlString
             newURLClass.getTitle(myURLString: urlString)
 
-            URLQuery.append(newURLClass)
-            for item in URLQuery {
-                            print("URL = \(item.myURLStrings)")
-                            print("Title = \(item.myURLtitle)")
-                            print("ResponseCode = \(item.statusCode)")
-            }
+            queryShared.query.append(newURLClass)
+//            for item in queryShared.query {
+//                            print("URL = \(item.myURLStrings)")
+//                            print("Title = \(item.myURLtitle)")
+//                            print("ResponseCode = \(item.statusCode)")
+//            }
         }
     }
 }
